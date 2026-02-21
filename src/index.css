@@ -235,33 +235,71 @@ body {
    ======================================== */
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes slideInRight {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
 }
 
 @keyframes slideInUp {
-  from { opacity: 0; transform: translateY(30px) scale(0.97); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 @keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
-  50% { box-shadow: 0 0 0 8px rgba(99, 102, 241, 0); }
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 0 0 8px rgba(99, 102, 241, 0);
+  }
 }
 
 .animate-fade-in {
@@ -358,4 +396,518 @@ textarea {
   .app-main {
     display: none;
   }
+}
+
+/* ========================================
+   FLOATING NOTE WINDOW (Pop-out)
+   ======================================== */
+
+.floating-note {
+  position: fixed;
+  z-index: 9999;
+  min-width: 260px;
+  min-height: 160px;
+  width: 340px;
+  height: 380px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 14px;
+  overflow: auto;
+  resize: both;
+  background: rgba(255, 255, 255, 0.93);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.18),
+    0 6px 20px rgba(0, 0, 0, 0.10),
+    0 0 0 1px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.2s ease;
+  animation: floatIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.dark .floating-note {
+  background: rgba(20, 28, 48, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.5),
+    0 6px 20px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+.floating-note:hover {
+  box-shadow:
+    0 32px 72px rgba(0, 0, 0, 0.22),
+    0 8px 28px rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+@keyframes floatIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ── Header / Drag Handle ── */
+.floating-note-header {
+  display: flex;
+  flex-direction: column;
+  cursor: grab;
+  user-select: none;
+  flex-shrink: 0;
+  background: rgba(0, 0, 0, 0.025);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.dark .floating-note-header {
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.floating-note-header:active {
+  cursor: grabbing;
+}
+
+.floating-note-accent {
+  height: 3px;
+  background: var(--accent, #6366f1);
+  flex-shrink: 0;
+}
+
+.floating-note-header-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 10px 8px;
+}
+
+.floating-note-title {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-surface-900);
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font-sans);
+  cursor: text;
+  min-width: 0;
+}
+
+.dark .floating-note-title {
+  color: var(--color-surface-100);
+}
+
+.floating-note-title::placeholder {
+  color: var(--color-surface-400);
+}
+
+/* ── Control Buttons ── */
+.floating-note-controls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.fn-ctrl-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--color-surface-400);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.fn-ctrl-btn:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--color-surface-600);
+}
+
+.dark .fn-ctrl-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-surface-300);
+}
+
+.fn-ctrl-close:hover {
+  background: rgba(239, 68, 68, 0.1) !important;
+  color: #ef4444 !important;
+}
+
+/* ── Color Picker Strip ── */
+.floating-note-color-picker {
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+.dark .floating-note-color-picker {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ── Body ── */
+.floating-note-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 12px;
+  gap: 8px;
+}
+
+.floating-note-textarea {
+  flex: 1;
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--color-surface-700);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-surface-300) transparent;
+}
+
+.dark .floating-note-textarea {
+  color: var(--color-surface-300);
+  scrollbar-color: var(--color-surface-600) transparent;
+}
+
+.floating-note-textarea::placeholder {
+  color: var(--color-surface-400);
+}
+
+/* ── Tasks ── */
+.floating-note-tasks {
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  padding-top: 8px;
+  flex-shrink: 0;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.dark .floating-note-tasks {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.fn-tasks-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--color-surface-400);
+  margin-bottom: 6px;
+}
+
+/* ── Add Task Row ── */
+.fn-add-task {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  padding-top: 6px;
+  flex-shrink: 0;
+}
+
+.dark .fn-add-task {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.fn-add-task-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--color-surface-400);
+  flex-shrink: 0;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.fn-add-task-btn:hover {
+  background: rgba(99, 102, 241, 0.1);
+  color: #6366f1;
+}
+
+.fn-add-task-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--color-surface-700);
+}
+
+.dark .fn-add-task-input {
+  color: var(--color-surface-300);
+}
+
+.fn-add-task-input::placeholder {
+  color: var(--color-surface-400);
+}
+
+/* ── Resize Grip Indicator ── */
+.floating-note-resize-grip {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.18) 1px, transparent 1px);
+  background-size: 4px 4px;
+  border-radius: 3px;
+  opacity: 0.5;
+}
+
+.dark .floating-note-resize-grip {
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.2) 1px, transparent 1px);
+}
+
+/* ========================================
+   NOTE POPUP — Browser popup / PiP window
+   ======================================== */
+
+.note-popup-wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.98);
+  font-family: var(--font-sans);
+}
+
+.dark .note-popup-wrap {
+  background: #0f1929;
+}
+
+/* ── Header ── */
+.note-popup-header {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: rgba(0, 0, 0, 0.025);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+}
+
+.dark .note-popup-header {
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.note-popup-accent {
+  height: 3px;
+  background: var(--accent, #6366f1);
+  flex-shrink: 0;
+}
+
+.note-popup-header-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px 9px;
+}
+
+.note-popup-title {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-surface-900);
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font-sans);
+  min-width: 0;
+}
+
+.dark .note-popup-title {
+  color: var(--color-surface-100);
+}
+
+.note-popup-title::placeholder {
+  color: var(--color-surface-400);
+}
+
+/* ── Control Buttons ── */
+.note-popup-controls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.np-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--color-surface-400);
+  transition: background 0.15s, color 0.15s;
+}
+
+.np-btn:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--color-surface-700);
+}
+
+.dark .np-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-surface-200);
+}
+
+.np-btn-hook:hover {
+  background: rgba(99, 102, 241, 0.1) !important;
+}
+
+.np-btn-release:hover {
+  background: rgba(234, 179, 8, 0.12) !important;
+}
+
+.np-btn-close:hover {
+  background: rgba(239, 68, 68, 0.1) !important;
+  color: #ef4444 !important;
+}
+
+/* ── Color Picker ── */
+.note-popup-colorpicker {
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  animation: fadeIn 0.15s ease forwards;
+}
+
+.dark .note-popup-colorpicker {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ── Body ── */
+.note-popup-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.note-popup-textarea {
+  flex: 1;
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--color-surface-700);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-surface-300) transparent;
+}
+
+.dark .note-popup-textarea {
+  color: var(--color-surface-300);
+  scrollbar-color: var(--color-surface-600) transparent;
+}
+
+.note-popup-textarea::placeholder {
+  color: var(--color-surface-400);
+}
+
+/* ── Tasks ── */
+.note-popup-tasks {
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  padding-top: 8px;
+  flex-shrink: 0;
+  max-height: 150px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.dark .note-popup-tasks {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.np-tasks-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--color-surface-400);
+  margin-bottom: 5px;
+}
+
+/* ── Add Task Row ── */
+.np-add-task {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  padding-top: 6px;
+  flex-shrink: 0;
+}
+
+.dark .np-add-task {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.np-add-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-surface-400);
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s;
+}
+
+.np-add-btn:hover {
+  background: rgba(99, 102, 241, 0.1);
+  color: #6366f1;
+}
+
+.np-add-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--color-surface-700);
+}
+
+.dark .np-add-input {
+  color: var(--color-surface-300);
+}
+
+.np-add-input::placeholder {
+  color: var(--color-surface-400);
 }

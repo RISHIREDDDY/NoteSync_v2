@@ -8,6 +8,8 @@ import Navbar from './components/Navbar'
 import NotesList from './components/NotesList'
 import NoteEditor from './components/NoteEditor'
 import SettingsDrawer from './components/SettingsDrawer'
+import FloatingNoteWindow from './components/FloatingNoteWindow'
+import NotePopup from './components/NotePopup'
 
 // Error Boundary
 class ErrorBoundary extends Component {
@@ -56,6 +58,11 @@ function AppContent() {
     const loading = useAuthStore(s => s.loading)
     const backgroundColor = usePreferencesStore(s => s.backgroundColor)
     const backgroundGradient = usePreferencesStore(s => s.backgroundGradient)
+    const floatingNotes = useNoteStore(s => s.floatingNotes)
+    const notes = useNoteStore(s => s.notes)
+
+    // Detect popup window mode: ?floatNote=<noteId>
+    const floatNoteId = new URLSearchParams(window.location.search).get('floatNote')
     const initRef = useRef(false)
     const dataRef = useRef(false)
 
@@ -118,9 +125,38 @@ function AppContent() {
         return <Login />
     }
 
+    // ── Popup window mode ──────────────────────────────────────────────
     const bgStyle = {}
     if (backgroundGradient) bgStyle.background = backgroundGradient
     else if (backgroundColor) bgStyle.backgroundColor = backgroundColor
+
+    if (floatNoteId) {
+        const note = notes.find(n => n.id === floatNoteId)
+        if (note) {
+            return (
+                <div style={{
+                    height: '100vh',
+                    background: 'var(--color-surface-50)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    overflow: 'hidden',
+                }} className={document.documentElement.className}>
+                    <NotePopup note={note} isPopupWindow />
+                </div>
+            )
+        }
+        // Note not loaded yet — show loader while Supabase fetches
+        return (
+            <div style={{
+                height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                background: 'linear-gradient(135deg, #0f172a, #1e1b4b)', color: '#94a3b8',
+                fontFamily: 'Inter, sans-serif', fontSize: 14
+            }}>
+                Loading note...
+            </div>
+        )
+    }
+
 
     return (
         <div className="app-layout" style={bgStyle}>
@@ -136,6 +172,11 @@ function AppContent() {
             </main>
 
             <SettingsDrawer />
+
+            {/* Floating pop-out note windows */}
+            {floatingNotes.map(note => (
+                <FloatingNoteWindow key={note.id} note={note} />
+            ))}
         </div>
     )
 }

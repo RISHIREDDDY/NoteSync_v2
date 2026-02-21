@@ -4,7 +4,8 @@ import { useTaskStore } from '../stores/taskStore'
 import { useAuthStore } from '../stores/authStore'
 import TaskItem from './TaskItem'
 import ColorPicker from './ColorPicker'
-import { HiOutlinePlus, HiOutlineSwatch, HiOutlineDocumentText } from 'react-icons/hi2'
+import { HiOutlinePlus, HiOutlineSwatch, HiOutlineDocumentText, HiArrowTopRightOnSquare } from 'react-icons/hi2'
+import { openNotePopup } from '../lib/notePopupUtils'
 
 export default function NoteEditor() {
     const selectedNote = useNoteStore(s => s.selectedNote)
@@ -103,13 +104,23 @@ export default function NoteEditor() {
                             : 'No tasks'}
                     </span>
                 </div>
-                <button
-                    onClick={() => setShowColorPicker(!showColorPicker)}
-                    className="p-1.5 rounded-lg text-surface-400 hover:text-surface-600 dark:hover:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 transition-all duration-200 cursor-pointer"
-                    title="Card color"
-                >
-                    <HiOutlineSwatch className="w-4 h-4" />
-                </button>
+                <div className="flex items-center gap-1">
+                    <button
+                        onClick={() => setShowColorPicker(!showColorPicker)}
+                        className="p-1.5 rounded-lg text-surface-400 hover:text-surface-600 dark:hover:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 transition-all duration-200 cursor-pointer"
+                        title="Card color"
+                    >
+                        <HiOutlineSwatch className="w-4 h-4" />
+                    </button>
+                    <button
+                        onClick={() => selectedNote && openNotePopup(selectedNote.id)}
+                        className="p-1.5 rounded-lg text-surface-400 hover:text-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 cursor-pointer"
+                        title="Open in separate window (pop-out)"
+                        id="popout-note-btn"
+                    >
+                        <HiArrowTopRightOnSquare className="w-4 h-4" />
+                    </button>
+                </div>
             </div>
 
             {/* Color picker */}

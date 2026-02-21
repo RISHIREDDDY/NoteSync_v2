@@ -1,7 +1,8 @@
 import { useTaskStore } from '../stores/taskStore'
 import { useNoteStore } from '../stores/noteStore'
-import { HiOutlineTrash } from 'react-icons/hi2'
+import { HiOutlineTrash, HiArrowTopRightOnSquare } from 'react-icons/hi2'
 import { format, isToday, isYesterday } from 'date-fns'
+import { openNotePopup } from '../lib/notePopupUtils'
 
 const EMPTY_TASKS = []
 
@@ -78,6 +79,16 @@ export default function NoteCard({ note, isSelected, onSelect }) {
                     </div>
                 )}
             </div>
+
+            {/* Pop-out button */}
+            <button
+                onClick={(e) => { e.stopPropagation(); openNotePopup(note.id) }}
+                className="absolute top-3 right-9 p-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer text-surface-400 hover:text-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20"
+                title="Open in separate window"
+                id={`popout-card-${note.id}`}
+            >
+                <HiArrowTopRightOnSquare className="w-3.5 h-3.5" />
+            </button>
 
             {/* Delete button */}
             <button

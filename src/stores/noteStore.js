@@ -6,11 +6,21 @@ export const useNoteStore = create((set, get) => ({
     searchQuery: '',
     selectedNote: null,
     editorOpen: false,
+    floatingNotes: [],
 
     setSearchQuery: (query) => set({ searchQuery: query }),
 
     openEditor: (note = null) => set({ selectedNote: note, editorOpen: true }),
     closeEditor: () => set({ selectedNote: null, editorOpen: false }),
+
+    popOut: (note) => set(state => {
+        const alreadyOpen = state.floatingNotes.find(n => n.id === note.id)
+        if (alreadyOpen) return {}
+        return { floatingNotes: [...state.floatingNotes, note] }
+    }),
+    closeFloat: (noteId) => set(state => ({
+        floatingNotes: state.floatingNotes.filter(n => n.id !== noteId)
+    })),
 
     fetchNotes: async (userId) => {
         const { data, error } = await supabase
@@ -77,7 +87,8 @@ export const useNoteStore = create((set, get) => ({
         set(state => ({
             notes: state.notes.filter(n => n.id !== noteId),
             selectedNote: state.selectedNote?.id === noteId ? null : state.selectedNote,
-            editorOpen: state.selectedNote?.id === noteId ? false : state.editorOpen
+            editorOpen: state.selectedNote?.id === noteId ? false : state.editorOpen,
+            floatingNotes: state.floatingNotes.filter(n => n.id !== noteId)
         }))
     },
 
